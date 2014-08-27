@@ -34,8 +34,8 @@ class SimpleTest
     msg += " [#{iso}]" if iso && iso != ''
     msg += " => #{e.message}" if e
     msg += " (mrbgems: #{GEMNAME})" if Object.const_defined?(:GEMNAME)
-    if $mrbtest_assert && $mrbtest_assert.size > 0
-      $mrbtest_assert.each do |idx, str, diff|
+    if @mrbtest_assert && @mrbtest_assert.size > 0
+      @mrbtest_assert.each do |idx, str, diff|
         msg += "\n - Assertion[#{idx}] Failed: #{str}\n#{diff}"
       end
     end
@@ -53,9 +53,9 @@ class SimpleTest
   def assert(str = 'Assertion failed', iso = '')
     self.t_print(str, (iso != '' ? " [#{iso}]" : ''), ' : ') if $mrbtest_verbose
     begin
-      $mrbtest_assert = []
-      $mrbtest_assert_idx = 0
-      if(!yield || $mrbtest_assert.size > 0)
+      @mrbtest_assert = []
+      @mrbtest_assert_idx = 0
+      if(!yield || @mrbtest_assert.size > 0)
         @asserts.push(self.assertion_string('Fail: ', str, iso, nil))
         @ko_test += 1
         self.t_print('F')
@@ -73,7 +73,7 @@ class SimpleTest
         self.t_print('X')
     end
     ensure
-      $mrbtest_assert = nil
+      @mrbtest_assert = nil
     end
     self.t_print("\n") if $mrbtest_verbose
   end
@@ -84,25 +84,25 @@ class SimpleTest
   end
 
   def assert_true(ret, msg = nil, diff = nil)
-    if $mrbtest_assert
-      $mrbtest_assert_idx += 1
+    if @mrbtest_assert
+      @mrbtest_assert_idx += 1
       unless ret
         msg = "Expected #{ret.inspect} to be true" unless msg
         diff = self.assertion_diff(true, ret)  unless diff
-        $mrbtest_assert.push([$mrbtest_assert_idx, msg, diff])
+        @mrbtest_assert.push([@mrbtest_assert_idx, msg, diff])
       end
     end
     ret
   end
 
   def assert_false(ret, msg = nil, diff = nil)
-    if $mrbtest_assert
-      $mrbtest_assert_idx += 1
+    if @mrbtest_assert
+      @mrbtest_assert_idx += 1
       if ret
         msg = "Expected #{ret.inspect} to be false" unless msg
         diff = self.assertion_diff(false, ret) unless diff
 
-        $mrbtest_assert.push([$mrbtest_assert_idx, msg, diff])
+        @mrbtest_assert.push([@mrbtest_assert_idx, msg, diff])
       end
     end
     !ret
@@ -154,8 +154,8 @@ class SimpleTest
 
   def assert_raise(*exp)
     ret = true
-    if $mrbtest_assert
-      $mrbtest_assert_idx += 1
+    if @mrbtest_assert
+      @mrbtest_assert_idx += 1
       msg = exp.last.class == String ? exp.pop : nil
       msg = msg.to_s + " : " if msg
       should_raise = false
@@ -167,7 +167,7 @@ class SimpleTest
         diff = "      Class: <#{e.class}>\n" +
                "    Message: #{e.message}"
         if not exp.any?{|ex| ex.instance_of?(Module) ? e.kind_of?(ex) : ex == e.class }
-          $mrbtest_assert.push([$mrbtest_assert_idx, msg, diff])
+          @mrbtest_assert.push([@mrbtest_assert_idx, msg, diff])
           ret = false
         end
       end
@@ -175,7 +175,7 @@ class SimpleTest
       exp = exp.first if exp.first
       if should_raise
         msg = "#{msg}#{exp.inspect} expected but nothing was raised."
-        $mrbtest_assert.push([$mrbtest_assert_idx, msg, nil])
+        @mrbtest_assert.push([@mrbtest_assert_idx, msg, nil])
         ret = false
       end
     end
@@ -184,8 +184,8 @@ class SimpleTest
 
   def assert_nothing_raised(*exp)
     ret = true
-    if $mrbtest_assert
-      $mrbtest_assert_idx += 1
+    if @mrbtest_assert
+      @mrbtest_assert_idx += 1
       msg = exp.last.class == String ? exp.pop : ""
       begin
         yield
@@ -193,7 +193,7 @@ class SimpleTest
         msg = "#{msg} exception raised."
         diff = "      Class: <#{e.class}>\n" +
                "    Message: #{e.message}"
-        $mrbtest_assert.push([$mrbtest_assert_idx, msg, diff])
+        @mrbtest_assert.push([@mrbtest_assert_idx, msg, diff])
         ret = false
       end
     end
@@ -236,6 +236,7 @@ class SimpleTest
     if Object.const_defined?(:Time)
       self.t_print(" Time: #{Time.now - @test_start} seconds\n")
     end
+    self.t_print("\n")
   end
 
   ##

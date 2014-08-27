@@ -1,4 +1,4 @@
-t = SimpleTest.new "Test Example"
+t = SimpleTest.new "Test Example1"
 
 t.assert "test1" do
   t.assert_equal "echo", "echo"
@@ -13,3 +13,12 @@ t.assert "test2" do
 end
 
 t.report
+
+s = SimpleTest.new "Test Example2"
+
+s.assert "test1" do
+  s.assert_equal "echo", "echo"
+  s.assert_equal "ech", "ech"
+end
+
+s.report
