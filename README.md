@@ -14,37 +14,50 @@ end
 ## example
 ### Test Code
 ```ruby
-t = SimpleTest.new
+t = SimpleTest.new "Test Example1"
 
 t.assert "test1" do
   t.assert_equal "echo", "echo"
-  t.assert_equal "echo", "echo0"
+  t.assert_equal "ech", "ech"
 end
 
 t.assert "test2" do
-  t.assert_equal "echo", "ech"
-  t.assert_equal "echo", "echo"
+  t.assert_equal "hoge", "hoge"
+  t.assert_not_equal "hoge", "foo"
+  t.assert_true true
+  t.assert_false false
 end
 
 t.report
+
+s = SimpleTest.new "Test Example2"
+
+s.assert "test1" do
+  s.assert_equal "echo", "echo"
+  s.assert_equal "ech", "ech"
+end
+
+s.report
 ```
 ### Result
 ```
 $ ./bin/mruby test.rb
-FF
-Fail: test1
- - Assertion[2] Failed: Expected to be equal
-    Expected: "echo"
-      Actual: "echo0"
-Fail: test2
- - Assertion[1] Failed: Expected to be equal
-    Expected: "echo"
-      Actual: "ech"
+SimpleTest: Test Example1
+..
 Total: 2
-   OK: 0
-   KO: 2
+   OK: 2
+   KO: 0
 Crash: 0
- Time: 0.0006290 seconds
+ Time: 0.0005770 seconds
+
+SimpleTest: Test Example2
+.
+Total: 1
+   OK: 1
+   KO: 0
+Crash: 0
+ Time: 0.0000330 seconds
+
 ```
 
 ## License
