@@ -1,4 +1,4 @@
-# mruby-simpletest   [![Build Status](https://travis-ci.org/matsumoto-r/mruby-simpletest.png?branch=master)](https://travis-ci.org/matsumoto-r/mruby-simpletest)
+# mruby-simpletest   [![Build Status](https://travis-ci.org/matsumoto-r/mruby-simpletest.svg?branch=master)](https://travis-ci.org/matsumoto-r/mruby-simpletest)
 SimpleTest class
 ## install by mrbgems
 - add conf.gem line to `build_config.rb`
@@ -12,53 +12,39 @@ MRuby::Build.new do |conf|
 end
 ```
 ## example
+### Test Code
 ```ruby
-$ok_test = 0
-$ko_test = 0
-$kill_test = 0
-$asserts  = []
-$test_start = Time.now if Object.const_defined?(:Time)
+t = SimpleTest.new
 
-puts "---------------------"
-puts "mod_mruby test start."
-puts "---------------------"
-puts ""
-
-def base64 value
-  r = [ value ].pack 'm'
-  r.include?("\n") ? r.split("\n").join("") : r
+t.assert "test1" do
+  t.assert_equal "echo", "echo"
+  t.assert_equal "echo", "echo0"
 end
 
-def server_addr
-  "127.0.0.1:38080"
+t.assert "test2" do
+  t.assert_equal "echo", "ech"
+  t.assert_equal "echo", "echo"
 end
 
-def base
-  "http://#{server_addr}"
-end
-
-assert('mod_mruby', 'location /hello-inline') do
-  res = HttpRequest.new.get base + '/hello-inline'
-  assert_equal 'hello', res["body"]
-end
-
-assert('mod_mruby', 'location /echo-test') do
-  res = HttpRequest.new.get base + '/echo-test'
-  assert_equal "echo\n", res["body"]
-end
-
-assert('mod_mruby', 'location /proxy') do
-  res = HttpRequest.new.get base + '/proxy'
-  assert_equal "proxy reply success", res["body"]
-end
-
-t report
-puts ""
-report
-puts ""
-if $ko_test > 0 or $kill_test > 0
-    raise "mrbtest failed (KO:#{$ko_test}, Crash:#{$kill_test})"
-end
+t.report
+```
+### Result
+```
+$ ./bin/mruby test.rb
+FF
+Fail: test1
+ - Assertion[2] Failed: Expected to be equal
+    Expected: "echo"
+      Actual: "echo0"
+Fail: test2
+ - Assertion[1] Failed: Expected to be equal
+    Expected: "echo"
+      Actual: "ech"
+Total: 2
+   OK: 0
+   KO: 2
+Crash: 0
+ Time: 0.0006290 seconds
 ```
 
 ## License
