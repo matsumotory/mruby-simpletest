@@ -3,12 +3,13 @@
 #
 
 class SimpleTest
-  def initialize
+  def initialize title=nil
     @ok_test = 0
     @ko_test = 0
     @kill_test = 0
     @asserts = []
     @test_start = Time.now if Object.const_defined?(:Time)
+    self.t_print("SimpleTest: #{title}\n") unless title.nil?
   end
 
   # Implementation of print due to the reason that there might be no print
