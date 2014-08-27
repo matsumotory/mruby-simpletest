@@ -1,5 +1,5 @@
 #
-# write below parameter in your test code
+# ref: mruby/test/assert.rb
 #
 
 class SimpleTest
