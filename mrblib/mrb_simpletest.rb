@@ -237,6 +237,7 @@ class SimpleTest
       self.t_print(" Time: #{Time.now - @test_start} seconds\n")
     end
     self.t_print("\n")
+    raise if @ko_test > 0 or @kill_test > 0
   end
 
   ##
