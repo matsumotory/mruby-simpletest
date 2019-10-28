@@ -3,4 +3,6 @@ MRuby::Gem::Specification.new('mruby-simpletest') do |spec|
   spec.authors = 'MATSUMOTO Ryosuke'
   spec.version = '0.0.1'
   spec.summary = 'Simple Test Class'
+
+  spec.add_test_dependency('mruby-print')
 end
